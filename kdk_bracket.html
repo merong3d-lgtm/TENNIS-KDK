@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KDK 스타일 복식 대진표</title>
+  <style>
+    :root {
+      --card: #ffffff;
+      --line: #d9e1ef;
+      --text: #1f2a37;
+      --muted: #667085;
+      --primary: #2f6fed;
+      --soft: #eef4ff;
+      --shadow: 0 8px 20px rgba(16, 24, 40, 0.08);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #f8fbff 0%, #f5f7fb 100%);
+    }
+    .wrap {
+      max-width: 1200px;
+      margin: 24px auto 40px;
+      padding: 0 16px;
+    }
+    .title {
+      margin: 0 0 10px;
+      font-size: 28px;
+      font-weight: 800;
+    }
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .sub {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid #e6ebf3;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .no-print {}
+    .grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 16px;
+    }
+    .label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #344054;
+    }
+    input {
+      width: 100%;
+      border: 1px solid #d0d7e2;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      outline: none;
+      background: #fff;
+    }
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.14);
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .teams-head {
+      display: grid;
+      grid-template-columns: 1fr 1fr 80px;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: #667085;
+      font-weight: 700;
+      padding: 0 2px;
+    }
+    .teams-list {
+      border: 1px solid #e3e9f4;
+      border-radius: 12px;
+      background: #fbfdff;
+      padding: 10px;
+      max-height: 360px;
+      overflow: auto;
+    }
+    .team-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 80px;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .team-row:last-child { margin-bottom: 0; }
+    .btns {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    button {
+      border: 0;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 10px 14px;
+      cursor: pointer;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-sub { background: #e8eefc; color: #2446b7; }
+    .btn-ghost { background: #eef2f8; color: #344054; }
+    .btn-danger { background: #ffe9ec; color: #b42318; }
+    .btn-reset { background: #f3f4f6; color: #344054; }
+    .help {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-top: 8px;
+    }
+    .info {
+      font-size: 13px;
+      color: #475467;
+      margin-top: 10px;
+    }
+    .round-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .round-head {
+      background: var(--soft);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 12px;
+      font-weight: 700;
+      color: #2144b0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      border-bottom: 1px solid #edf1f7;
+      padding: 10px 12px;
+      text-align: left;
+    }
+    th {
+      background: #fafcff;
+      color: #475467;
+      font-size: 12px;
+    }
+    .cell-input {
+      width: 100%;
+      min-width: 72px;
+      border: 1px solid #d0d7e2;
+      border-radius: 8px;
+      padding: 6px 8px;
+      font-size: 13px;
+      background: #fff;
+    }
+    .score-input {
+      width: 64px;
+      border: 1px solid #d0d7e2;
+      border-radius: 8px;
+      padding: 6px 8px;
+      font-size: 13px;
+      text-align: center;
+      margin: 0 4px;
+    }
+    .roster-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      columns: 2;
+      column-gap: 14px;
+    }
+    .roster-list li {
+      margin: 0;
+      margin-bottom: 6px;
+      padding: 6px 8px;
+      border: 1px solid #e6ebf3;
+      border-radius: 8px;
+      background: #fbfdff;
+      font-size: 13px;
+      white-space: nowrap;
+      break-inside: avoid;
+    }
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+      .roster-list { columns: 1; }
+    }
+    @media print {
+      body { background: #fff; }
+      .no-print { display: none !important; }
+      .wrap { max-width: none; margin: 0; padding: 0; }
+      .panel { box-shadow: none; border: 1px solid #dfe5ef; }
+      table th:nth-child(3), table td:nth-child(3) { display: none; }
+      .roster-list { columns: 2; }
+      .print-page {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .print-page:not(:last-of-type) {
+        break-after: page;
+        page-break-after: always;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title-row">
+      <h1 class="title">KDK 스타일 복식 대진표 생성기</h1>
+      <button class="btn-reset no-print" id="resetBtn" type="button">초기화</button>
+    </div>
+    <p class="sub">개인 참가자 입력 -> 2/3/4게임 선택형 파트너 로테이션 대진 자동 생성</p>
+
+    <div class="panel grid no-print">
+      <div>
+        <label class="label">참가자 입력 (개인 기준)</label>
+        <div class="teams-head">
+          <div>선수 이름</div>
+          <div>시드(선택)</div>
+          <div>삭제</div>
+        </div>
+        <div id="teamsList" class="teams-list"></div>
+        <div class="btns" style="margin-top:10px;">
+          <button class="btn-sub" id="addTeamBtn" type="button">참가자 추가</button>
+        </div>
+        <p class="help">
+          - KDK 방식처럼 고정 팀이 아니라 매 게임 파트너가 바뀝니다.<br>
+          - 시드는 선택사항이며, 낮을수록 상위 시드입니다 (1번이 최상위).<br>
+          - 4명 미만 참가 시 대진 생성이 불가합니다.
+        </p>
+      </div>
+
+      <div>
+        <label class="label" for="eventName">대회명</label>
+        <input id="eventName" value="KDK 테니스 월례회" />
+        <div class="row">
+          <div>
+            <label class="label" for="courtName">장소</label>
+            <input id="courtName" value="KDK 코트" />
+          </div>
+          <div>
+            <label class="label" for="eventDate">날짜</label>
+            <input id="eventDate" type="date" />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label class="label" for="courtCount">코트 수</label>
+            <input id="courtCount" type="number" min="1" value="2" />
+          </div>
+          <div>
+            <label class="label" for="gameCount">개인당 경기수</label>
+            <input id="gameCount" type="number" min="2" max="4" value="4" />
+          </div>
+        </div>
+        <div class="btns">
+          <button class="btn-primary" id="generateBtn">대진표 생성</button>
+          <button class="btn-sub" id="calcBtn">성적 집계</button>
+          <button class="btn-sub" id="sampleBtn">샘플 채우기</button>
+          <button class="btn-ghost" id="printBtn">인쇄 / PDF</button>
+        </div>
+        <div class="info" id="metaInfo">생성 후 개인당 경기수/총 경기수/중복 정보가 표시됩니다.</div>
+      </div>
+    </div>
+
+    <div class="panel print-page">
+      <div id="printRoster"></div>
+    </div>
+
+    <div class="panel print-page">
+      <div id="headerInfo" class="info" style="margin-top:0; margin-bottom:10px;"></div>
+      <div id="schedule"></div>
+    </div>
+
+    <div class="panel print-page">
+      <div class="label">개인 성적표</div>
+      <div id="standingInfo" class="info" style="margin-top:0; margin-bottom:10px;">경기 결과를 입력한 뒤 성적 집계를 누르세요.</div>
+      <div id="standings"></div>
+    </div>
+  </div>
+
+  <script>
+    const teamsList = document.getElementById("teamsList");
+    const addTeamBtn = document.getElementById("addTeamBtn");
+    const generateBtn = document.getElementById("generateBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const calcBtn = document.getElementById("calcBtn");
+    const sampleBtn = document.getElementById("sampleBtn");
+    const printBtn = document.getElementById("printBtn");
+    const scheduleEl = document.getElementById("schedule");
+    const standingsEl = document.getElementById("standings");
+    const standingInfoEl = document.getElementById("standingInfo");
+    const printRosterEl = document.getElementById("printRoster");
+    const metaInfo = document.getElementById("metaInfo");
+    const headerInfo = document.getElementById("headerInfo");
+    const eventNameEl = document.getElementById("eventName");
+    const courtNameEl = document.getElementById("courtName");
+    const eventDateEl = document.getElementById("eventDate");
+    const courtCountEl = document.getElementById("courtCount");
+    const gameCountEl = document.getElementById("gameCount");
+    let currentPlayers = [];
+    let currentRounds = [];
+
+    function addTeamRow(name = "", seed = "") {
+      const row = document.createElement("div");
+      row.className = "team-row";
+      row.innerHTML = `
+        <input type="text" class="player1" placeholder="선수 이름" value="${name}">
+        <input type="number" class="player2" min="1" placeholder="예: 1" value="${seed}">
+        <button class="btn-danger remove-team" type="button">삭제</button>
+      `;
+      teamsList.appendChild(row);
+      row.querySelector(".remove-team").addEventListener("click", () => {
+        if (teamsList.children.length <= 4) {
+          alert("최소 4명은 필요합니다.");
+          return;
+        }
+        row.remove();
+      });
+    }
+
+    function getPlayers() {
+      const rows = Array.from(teamsList.querySelectorAll(".team-row"));
+      const players = [];
+      for (const row of rows) {
+        const name = row.querySelector(".player1").value.trim();
+        const seedRaw = row.querySelector(".player2").value.trim();
+        if (!name) continue;
+        const seed = /^\d+$/.test(seedRaw) ? Number(seedRaw) : 999;
+        players.push({ id: name, name, seed });
+      }
+      return players;
+    }
+
+    function allUniquePairs(players) {
+      const pairs = [];
+      for (let i = 0; i < players.length; i++) {
+        for (let j = i + 1; j < players.length; j++) {
+          pairs.push([players[i], players[j]]);
+        }
+      }
+      return pairs;
+    }
+
+    function key2(a, b) {
+      return a < b ? `${a}|${b}` : `${b}|${a}`;
+    }
+
+    function buildKdkStyleSchedule(players, gamesPerPlayer, courtCount) {
+      const partnerCount = new Map();
+      const opponentCount = new Map();
+      const playCount = new Map();
+      const allIds = players.map(p => p.id);
+      for (const id of allIds) playCount.set(id, 0);
+
+      const pairPool = allUniquePairs(players);
+
+      function partnerUsed(a, b) {
+        return partnerCount.get(key2(a, b)) || 0;
+      }
+      function opponentUsed(a, b) {
+        return opponentCount.get(key2(a, b)) || 0;
+      }
+      function markMatch(t1, t2) {
+        const [a, b] = t1;
+        const [c, d] = t2;
+        partnerCount.set(key2(a.id, b.id), partnerUsed(a.id, b.id) + 1);
+        partnerCount.set(key2(c.id, d.id), partnerUsed(c.id, d.id) + 1);
+        [[a, c], [a, d], [b, c], [b, d]].forEach(([x, y]) => {
+          opponentCount.set(key2(x.id, y.id), opponentUsed(x.id, y.id) + 1);
+        });
+        [a, b, c, d].forEach(p => playCount.set(p.id, (playCount.get(p.id) || 0) + 1));
+      }
+
+      function teamScore(pair) {
+        const [a, b] = pair;
+        const partnerPenalty = partnerUsed(a.id, b.id) * 30;
+        const playPenalty = (playCount.get(a.id) || 0) + (playCount.get(b.id) || 0);
+        return partnerPenalty + playPenalty;
+      }
+
+      const totalMatchesNeeded = (players.length * gamesPerPlayer) / 4;
+      if (!Number.isInteger(totalMatchesNeeded)) {
+        return { error: "참가자 수와 개인당 경기수 조합상 모두 동일 경기수를 만들 수 없습니다. (참가자수 x 경기수)는 4의 배수여야 합니다." };
+      }
+
+      const rounds = [];
+      let builtMatches = 0;
+      let guard = 0;
+      while (builtMatches < totalMatchesNeeded && guard < 200) {
+        guard++;
+        const matches = [];
+        const usedInRound = new Set();
+        const sortedPairs = pairPool.slice().sort((x, y) => {
+          const [xa, xb] = x;
+          const [ya, yb] = y;
+          const xNeed = gamesPerPlayer * 2 - ((playCount.get(xa.id) || 0) + (playCount.get(xb.id) || 0));
+          const yNeed = gamesPerPlayer * 2 - ((playCount.get(ya.id) || 0) + (playCount.get(yb.id) || 0));
+          return (yNeed - xNeed) || (teamScore(x) - teamScore(y));
+        });
+
+        for (const p1 of sortedPairs) {
+          const [a, b] = p1;
+          if (usedInRound.has(a.id) || usedInRound.has(b.id)) continue;
+          if ((playCount.get(a.id) || 0) >= gamesPerPlayer) continue;
+          if ((playCount.get(b.id) || 0) >= gamesPerPlayer) continue;
+          if (partnerUsed(a.id, b.id) > 0) continue; // 파트너 중복 금지
+
+          let best = null;
+          let bestScore = Infinity;
+          for (const p2 of sortedPairs) {
+            const [c, d] = p2;
+            if (a.id === c.id || a.id === d.id || b.id === c.id || b.id === d.id) continue;
+            if (usedInRound.has(c.id) || usedInRound.has(d.id)) continue;
+            if ((playCount.get(c.id) || 0) >= gamesPerPlayer) continue;
+            if ((playCount.get(d.id) || 0) >= gamesPerPlayer) continue;
+            if (partnerUsed(c.id, d.id) > 0) continue; // 파트너 중복 금지
+
+            const oppPenalty =
+              opponentUsed(a.id, c.id) + opponentUsed(a.id, d.id) +
+              opponentUsed(b.id, c.id) + opponentUsed(b.id, d.id);
+            const balancePenalty = Math.abs((a.seed + b.seed) - (c.seed + d.seed)) * 0.6;
+            const underUseBonus =
+              ((gamesPerPlayer - (playCount.get(c.id) || 0)) + (gamesPerPlayer - (playCount.get(d.id) || 0))) * 2;
+            const total = oppPenalty * 15 + balancePenalty + teamScore(p2) - underUseBonus;
+            if (total < bestScore) {
+              bestScore = total;
+              best = p2;
+            }
+          }
+
+          if (best) {
+            const [c, d] = best;
+            usedInRound.add(a.id); usedInRound.add(b.id); usedInRound.add(c.id); usedInRound.add(d.id);
+            markMatch([a, b], [c, d]);
+            matches.push({
+              p1: a.id,
+              p2: b.id,
+              p3: c.id,
+              p4: d.id,
+              t1: `${a.name} / ${b.name}`,
+              t2: `${c.name} / ${d.name}`
+            });
+            builtMatches++;
+            if (matches.length >= courtCount || builtMatches >= totalMatchesNeeded) break;
+          }
+        }
+
+        if (matches.length === 0) {
+          return { error: "현재 조건으로는 동일 경기수 배정이 어렵습니다. 코트 수를 늘리거나 참가자 수/경기수를 조정해 주세요." };
+        }
+        rounds.push(matches);
+      }
+
+      const unequal = players.some(p => (playCount.get(p.id) || 0) !== gamesPerPlayer);
+      if (unequal) {
+        return { error: "모든 참가자의 경기수를 동일하게 맞추지 못했습니다. 조건을 조정해 주세요." };
+      }
+
+      const hasDuplicatePartner = Array.from(partnerCount.values()).some(v => v > 1);
+      if (hasDuplicatePartner) {
+        return { error: "파트너 중복 없이 배정할 수 없습니다. 참가자 수/코트 수/경기수를 조정해 주세요." };
+      }
+
+      return { rounds, partnerCount, opponentCount, playCount };
+    }
+
+    function courtLabel(index) {
+      return String.fromCharCode(65 + index);
+    }
+
+    function renderSchedule(rounds) {
+      scheduleEl.innerHTML = "";
+      standingsEl.innerHTML = "";
+      standingInfoEl.textContent = "경기 결과를 입력한 뒤 성적 집계를 누르세요.";
+
+      rounds.forEach((matches, idx) => {
+        const card = document.createElement("div");
+        card.className = "round-card";
+
+        const head = document.createElement("div");
+        head.className = "round-head";
+        head.textContent = `${idx + 1} 라운드`;
+        card.appendChild(head);
+
+        const table = document.createElement("table");
+        table.innerHTML = `
+          <thead>
+            <tr><th style="width:120px;">코트</th><th>대진</th><th style="width:220px;">결과 입력</th></tr>
+          </thead>
+          <tbody></tbody>
+        `;
+        const tbody = table.querySelector("tbody");
+
+        if (matches.length === 0) {
+          const tr = document.createElement("tr");
+          tr.innerHTML = "<td colspan='3'>해당 라운드 경기가 없습니다.</td>";
+          tbody.appendChild(tr);
+        } else {
+          matches.forEach((m, i) => {
+            const court = courtLabel(i % Math.max(1, Number(courtCountEl.value) || 1));
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${court}코트</td>
+              <td>${m.t1} vs ${m.t2}</td>
+              <td>
+                <input class="score-input score-a" type="number" min="0" max="6" placeholder="팀1" data-round="${idx}" data-match="${i}">
+                :
+                <input class="score-input score-b" type="number" min="0" max="6" placeholder="팀2" data-round="${idx}" data-match="${i}">
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+
+        card.appendChild(table);
+        scheduleEl.appendChild(card);
+      });
+
+      const matchCount = rounds.reduce((sum, r) => sum + r.length, 0);
+      metaInfo.textContent = `총 ${rounds.length}라운드 | 총 ${matchCount}경기`;
+    }
+
+    function renderPrintRoster(players) {
+      const sorted = players.slice().sort((a, b) => {
+        if (a.seed !== b.seed) return a.seed - b.seed;
+        return a.name.localeCompare(b.name, "ko");
+      });
+      const items = sorted
+        .map((p, i) => `<li>${i + 1}. ${p.name}</li>`)
+        .join("");
+      printRosterEl.innerHTML = `
+        <div class="label" style="margin-bottom:6px;">참가 명단</div>
+        <ol class="roster-list">${items}</ol>
+      `;
+    }
+
+    function renderStandings(players, statsMap) {
+      const rows = players.map(p => {
+        const s = statsMap.get(p.id);
+        const diff = s.gf - s.ga;
+        return { name: p.name, seed: p.seed, ...s, diff };
+      }).sort((a, b) =>
+        b.win - a.win ||
+        b.draw - a.draw ||
+        b.diff - a.diff ||
+        b.gf - a.gf ||
+        a.seed - b.seed ||
+        a.name.localeCompare(b.name, "ko")
+      );
+
+      let html = `
+        <table>
+          <thead>
+            <tr>
+              <th style="width:70px;">순위</th>
+              <th>이름</th>
+              <th style="width:90px;">시드</th>
+              <th style="width:90px;">경기수</th>
+              <th style="width:80px;">승</th>
+              <th style="width:80px;">무</th>
+              <th style="width:80px;">패</th>
+              <th style="width:90px;">득점</th>
+              <th style="width:90px;">실점</th>
+              <th style="width:90px;">득실</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      rows.forEach((r, i) => {
+        html += `<tr>
+          <td>${i + 1}</td>
+          <td>${r.name}</td>
+          <td>${r.seed === 999 ? "-" : r.seed}</td>
+          <td>${r.played}</td>
+          <td>${r.win}</td>
+          <td>${r.draw}</td>
+          <td>${r.lose}</td>
+          <td>${r.gf}</td>
+          <td>${r.ga}</td>
+          <td>${r.diff}</td>
+        </tr>`;
+      });
+      html += "</tbody></table>";
+      standingsEl.innerHTML = html;
+    }
+
+    function calculateStandings() {
+      if (!currentPlayers.length || !currentRounds.length) {
+        alert("먼저 대진표를 생성해 주세요.");
+        return;
+      }
+
+      const stats = new Map();
+      currentPlayers.forEach(p => {
+        stats.set(p.id, { played: 0, win: 0, draw: 0, lose: 0, gf: 0, ga: 0 });
+      });
+
+      let entered = 0;
+      for (let r = 0; r < currentRounds.length; r++) {
+        for (let m = 0; m < currentRounds[r].length; m++) {
+          const match = currentRounds[r][m];
+          const aEl = scheduleEl.querySelector(`.score-a[data-round="${r}"][data-match="${m}"]`);
+          const bEl = scheduleEl.querySelector(`.score-b[data-round="${r}"][data-match="${m}"]`);
+          const sa = Number(aEl?.value);
+          const sb = Number(bEl?.value);
+          if (!Number.isFinite(sa) || !Number.isFinite(sb)) continue;
+          if (sa < 0 || sa > 6 || sb < 0 || sb > 6) {
+            alert("결과 점수는 0~6 사이로 입력해 주세요.");
+            return;
+          }
+          entered++;
+
+          const t1 = [match.p1, match.p2];
+          const t2 = [match.p3, match.p4];
+          t1.forEach(id => {
+            const s = stats.get(id);
+            s.played += 1;
+            s.gf += sa;
+            s.ga += sb;
+          });
+          t2.forEach(id => {
+            const s = stats.get(id);
+            s.played += 1;
+            s.gf += sb;
+            s.ga += sa;
+          });
+          if (sa > sb) {
+            t1.forEach(id => stats.get(id).win += 1);
+            t2.forEach(id => stats.get(id).lose += 1);
+          } else if (sb > sa) {
+            t2.forEach(id => stats.get(id).win += 1);
+            t1.forEach(id => stats.get(id).lose += 1);
+          } else {
+            // 동점(예: 5:5)은 무승부 처리
+            t1.forEach(id => stats.get(id).draw += 1);
+            t2.forEach(id => stats.get(id).draw += 1);
+          }
+        }
+      }
+
+      renderStandings(currentPlayers, stats);
+      standingInfoEl.textContent = `입력 완료 경기 수: ${entered}경기`;
+    }
+
+    function resetAll() {
+      teamsList.innerHTML = "";
+      addTeamRow();
+      addTeamRow();
+      addTeamRow();
+      addTeamRow();
+
+      eventNameEl.value = "KDK 테니스 월례회";
+      courtNameEl.value = "KDK 코트";
+      eventDateEl.value = "";
+      courtCountEl.value = 2;
+      gameCountEl.value = 4;
+
+      scheduleEl.innerHTML = "";
+      standingsEl.innerHTML = "";
+      printRosterEl.innerHTML = "";
+      headerInfo.innerHTML = "";
+      metaInfo.textContent = "생성 후 개인당 경기수/총 경기수/중복 정보가 표시됩니다.";
+      standingInfoEl.textContent = "경기 결과를 입력한 뒤 성적 집계를 누르세요.";
+
+      currentPlayers = [];
+      currentRounds = [];
+    }
+
+    generateBtn.addEventListener("click", () => {
+      const players = getPlayers();
+      if (!players) return;
+      if (players.length < 4) {
+        alert("최소 4명 이상 입력해 주세요.");
+        return;
+      }
+      const uniqueCheck = new Set(players.map(p => p.id));
+      if (uniqueCheck.size !== players.length) {
+        alert("이름이 같은 참가자가 있습니다. 이름을 구분해서 입력해 주세요.");
+        return;
+      }
+
+      const courtCount = Math.max(1, Number(courtCountEl.value) || 1);
+      const gameCountRaw = Number(gameCountEl.value);
+      const gameCount = [2, 3, 4].includes(gameCountRaw) ? gameCountRaw : 4;
+
+      const scheduleData = buildKdkStyleSchedule(players, gameCount, courtCount);
+      if (scheduleData.error) {
+        alert(scheduleData.error);
+        return;
+      }
+      const rounds = scheduleData.rounds;
+      currentPlayers = players;
+      currentRounds = rounds;
+      renderPrintRoster(players);
+
+      const eventName = eventNameEl.value.trim() || "KDK 테니스 월례회";
+      const courtName = courtNameEl.value.trim() || "-";
+      const dateStr = eventDateEl.value || "-";
+      headerInfo.innerHTML = `<b>${eventName}</b> | 장소: ${courtName} | 날짜: ${dateStr} | 방식: KDK 스타일 복식 | 게임수: ${gameCount}`;
+      renderSchedule(rounds);
+
+      let dupPartner = 0;
+      scheduleData.partnerCount.forEach(v => { if (v > 1) dupPartner += (v - 1); });
+      let dupOpp = 0;
+      scheduleData.opponentCount.forEach(v => { if (v > 1) dupOpp += (v - 1); });
+      const totalMatches = rounds.reduce((sum, r) => sum + r.length, 0);
+      metaInfo.textContent =
+        `참가 ${players.length}명 | 개인당 ${gameCount}경기(동일) | 총 ${totalMatches}경기 | 파트너 중복 ${dupPartner}회 | 상대 중복 ${dupOpp}회`;
+    });
+
+    sampleBtn.addEventListener("click", () => {
+      teamsList.innerHTML = "";
+      [
+        ["김민수", 1],
+        ["박지훈", 2],
+        ["이정우", 3],
+        ["최도윤", 4],
+        ["정하늘", ""],
+        ["강성민", ""],
+        ["윤태호", ""],
+        ["오지환", ""],
+        ["한재민", ""],
+        ["송우진", ""]
+      ].forEach(([name, seed]) => addTeamRow(name, seed));
+    });
+
+    addTeamBtn.addEventListener("click", () => addTeamRow());
+    resetBtn.addEventListener("click", resetAll);
+    calcBtn.addEventListener("click", calculateStandings);
+    printBtn.addEventListener("click", () => window.print());
+
+    addTeamRow();
+    addTeamRow();
+    addTeamRow();
+    addTeamRow();
+  </script>
+</body>
+</html>
